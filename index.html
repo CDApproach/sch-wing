@@ -89,11 +89,12 @@
   button.big:active { transform: translateY(2px); box-shadow: 0 2px 0 #6d1404; }
   .stats { font-size: 16px; line-height: 1.6; margin-bottom: 12px; }
   .stats b { color: #ffd76a; }
-  .settings { text-align: left; max-width: 380px; margin: 4px auto 14px; font-size: 15px; }
-  .settings label { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid #222a3a; }
+  .settings { text-align: left; max-width: 380px; margin: 0 auto 10px; font-size: 15px; }
+  .settings label { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px solid #222a3a; }
   .settings input[type=checkbox] { width: 22px; height: 22px; accent-color: #ff6a3d; }
   .settings input[type=range] { width: 160px; accent-color: #ff6a3d; }
-  #sensorInfo { font-size: 12px; color: var(--dim); margin-bottom: 12px; }
+  #sensorInfo { font-size: 12px; line-height: 1.45; color: var(--dim); margin: 0 auto 12px; max-width: 460px; }
+  #sensorInfo b { color: #ffd76a; }
 
   #rotate {
     position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column; gap: 14px;
@@ -668,9 +669,11 @@ function pauseGame() {
   $('optInvert').checked = settings.invert;
   $('optSens').value = settings.sens;
   $('optSound').checked = settings.sound;
-  $('sensorInfo').textContent = tilt.have ? 'Neigungssensor: aktiv'
-    : tilt.denied ? 'Neigungssensor: Zugriff verweigert – Steuerung durch Wischen.'
-    : 'Neigungssensor: nicht gefunden – Steuerung durch Wischen.';
+  $('sensorInfo').innerHTML = tilt.have ? 'Neigungssensor: aktiv'
+    : (tilt.denied ? 'Neigungssensor: <b>Zugriff verweigert</b>.' : 'Neigungssensor: <b>keine Daten</b>.') +
+      ' Erlaube in den Website-Einstellungen des Browsers die <b>Bewegungssensoren</b> für diese Seite' +
+      ' (bei GrapheneOS zusätzlich die App-Berechtigung <b>Sensoren</b> des Browsers) und lade die Seite neu.' +
+      ' Bis dahin lenkst du durch Ziehen auf dem Bildschirm.';
   showScreen('pauseScreen');
 }
 function resumeGame() {
@@ -1131,7 +1134,7 @@ function drawHud(dt, time) {
   }
   if (inGame && !tilt.have && isTouch && state === 'play') {
     g.fillStyle = 'rgba(230,238,255,0.7)'; g.font = '600 12px system-ui, sans-serif';
-    g.fillText('Kein Neigungssensor – zum Lenken auf dem Bildschirm ziehen', W / 2, H * 0.12 + 18);
+    g.fillText((tilt.denied ? 'Sensorzugriff verweigert' : 'Kein Neigungssensor') + ' – zum Lenken ziehen · Hilfe im Pausemenü (II)', W / 2, H * 0.12 + 18);
   }
 
   // Treffer-Blitz
